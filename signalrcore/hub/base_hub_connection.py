@@ -33,7 +33,7 @@ class StreamHandler(object):
 
 
 class BaseHubConnection(websocket.WebSocketApp):
-    def __init__(self, url, protocol, headers={}):
+    def __init__(self, url, protocol, headers=None, *args, **kwargs):
         self.logger = logging.getLogger("SignalRCoreClient")
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)

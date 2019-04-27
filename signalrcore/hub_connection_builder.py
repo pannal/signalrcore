@@ -50,6 +50,8 @@ class HubConnectionBuilder(object):
 
             self.has_auth_configured = "access_token_factory" in options.keys() \
                                        and callable(options["access_token_factory"])
+
+            self.headers = options.get("headers", None)
         self.hub_url = hub_url
         self._hub = None
         self.options = self.options if options is None else options
@@ -64,17 +66,17 @@ class HubConnectionBuilder(object):
 
         """
         self.protocol = JsonHubProtocol()
-        self.headers = {}
+        cls = BaseHubConnection
+        kw = {}
+
         if self.has_auth_configured:
             auth_function = self.options["access_token_factory"]
             self.token = auth_function()
-            self.negotiate_headers = {"Authorization": "Bearer " + self.token}
+            cls = AuthHubConnection
+            kw["token"] = self.token
+            kw["negotiate_headers"] = {"Authorization": "Bearer " + self.token}
 
-        self._hub = AuthHubConnection(self.hub_url, self.protocol, self.token, self.negotiate_headers)\
-            if self.has_auth_configured else\
-            BaseHubConnection(
-                self.hub_url,
-                self.protocol)
+        self._hub = cls(self.hub_url, self.protocol, headers=self.headers, **kw)
         return self
 
     def on(self, event, callback_function):

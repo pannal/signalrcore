@@ -4,7 +4,8 @@ from .base_hub_connection import BaseHubConnection
 
 
 class AuthHubConnection(BaseHubConnection):
-    def __init__(self, url, protocol, token, negotiate_headers):
+    def __init__(self, url, protocol, token=None, negotiate_headers=None, **kw):
+        assert token is not None and negotiate_headers is not None
         self.token = token
         self.negotiate_headers = negotiate_headers
         negotiate_url = "https" + url[3:] if url.startswith("wss") else "http" + url[2:]
