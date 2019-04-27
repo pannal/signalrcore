@@ -13,4 +13,4 @@ class AuthHubConnection(BaseHubConnection):
         response = requests.post(negotiate_url, headers=self.negotiate_headers)
         data = response.json()
         url = url + "?id={0}&access_token={1}".format(data["connectionId"], self.token)
-        super(AuthHubConnection, self).__init__(url, protocol)
+        super(AuthHubConnection, self).__init__(url, protocol, **kw)
